@@ -11,6 +11,7 @@ public class ReportData {
     private HttpResponseData responseData;
     private String timestamp;
     private List<FindingData> findingDataList;
+    private String desc;
     public ReportData() {
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Shanghai"));
@@ -58,5 +59,13 @@ public class ReportData {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

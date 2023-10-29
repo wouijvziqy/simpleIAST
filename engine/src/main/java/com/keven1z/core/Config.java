@@ -28,6 +28,8 @@ public class Config {
      * hook黑名单路径
      */
     public final static String BLACK_LIST_FILE_PATH = "blacklist.txt";
+    public final static String WEAK_PASSWORD_FILE_PATH = "weak_password.txt";
+
     /**
      * 服务端地址
      */

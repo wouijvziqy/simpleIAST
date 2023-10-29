@@ -1,6 +1,5 @@
 package com.keven1z.core.hook.asm;
 
-import com.keven1z.core.hook.http.HttpSpy;
 import com.keven1z.core.utils.ReflectionUtils;
 
 import java.lang.spy.SimpleIASTSpyManager;
@@ -32,6 +31,14 @@ public interface AsmMethods {
             Object.class, Object.class, Object[].class, String.class, String.class, String.class, String.class, String.class
     );
     /**
+     * asm method of {@link SimpleIASTSpyManager#$_single(Object, Object, Object[], String, String, String, String, String, boolean)}
+     */
+    Method ASM_METHOD_HOOKSCHEDULER$_single = getAsmMethod(
+            SimpleIASTSpyManager.class,
+            "$_single",
+            Object.class, Object.class, Object[].class, String.class, String.class, String.class, String.class, String.class, boolean.class
+    );
+    /**
      * asm method of {@link com.keven1z.core.hook.http.HttpSpy#$_setRequestBody(Object)}
      */
     Method ASM_METHOD_HTTPSPY$_setRequestBody = getAsmMethod(
@@ -56,7 +63,7 @@ public interface AsmMethods {
             Object.class, Object.class
     );
     /**
-     * asm method of {@link com.keven1z.core.hook.http.HttpSpy#$_onReadInvoked(Integer, Object, byte[],int,int)}
+     * asm method of {@link com.keven1z.core.hook.http.HttpSpy#$_onReadInvoked(Integer, Object, byte[], int, int)}
      */
     Method ASM_METHOD_HTTPSPY$_onReadInvoked_3 = getAsmMethod(
             SimpleIASTSpyManager.class,

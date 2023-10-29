@@ -1,9 +1,6 @@
 package com.keven1z.core.utils;
 
-import com.keven1z.core.model.graph.clazz.ClassData;
-import com.keven1z.core.model.graph.clazz.ClassGraph;
 import org.objectweb.asm.ClassReader;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,51 +16,6 @@ import static org.objectweb.asm.Opcodes.*;
 public class ClassUtils {
     private static final String[] IGNORE_OBJECT_CLASS = new String[]{"java.lang.Object", "java.lang.Cloneable", "java.io.Serializable", "java.lang.Iterable"};
     private static final String INTEGER_CLASS = "java.lang.Integer";
-
-    /**
-     * 获取当前类的所有祖先类
-     *
-     * @param ancestors  类的祖先
-     * @param classGraph
-     * @return 祖先类名的list集合
-     */
-    public static List<String> buildAllAncestors(List<String> ancestors, ClassLoader classLoader, ClassGraph classGraph) throws ClassNotFoundException {
-        Set<String> set = new HashSet<>();
-        for (String ancestor : ancestors) {
-            Class<?> loadClass;
-            try {
-                //如果加载出错，使用系统classloader进行加载
-                loadClass = classLoader.loadClass(ancestor);
-            } catch (Throwable ignore) {
-                classLoader = ClassLoader.getSystemClassLoader();
-                loadClass = classLoader.loadClass(ancestor);
-            }
-            //提取接口
-            Class<?>[] interfaces = loadClass.getInterfaces();
-            for (Class<?> clazz : interfaces) {
-                String name = clazz.getName();
-                if (!ObjectUtils.isInList(name, Arrays.asList(IGNORE_OBJECT_CLASS))) {
-                    classGraph.addNode(name);
-                    classGraph.addEdge(new ClassData(ancestor), new ClassData(name));
-                    set.add(name);
-                }
-            }
-            //提取父类
-            String name = loadClass.getSuperclass().getName();
-            if (!ObjectUtils.isInList(name, Arrays.asList(IGNORE_OBJECT_CLASS))) {
-                classGraph.addNode(name);
-                classGraph.addEdge(new ClassData(ancestor), new ClassData(name));
-                set.add(name);
-            }
-
-
-        }
-        ArrayList<String> list = new ArrayList<>(set);
-        if (!set.isEmpty()) {
-            set.addAll(buildAllAncestors(list, classLoader, classGraph));
-        }
-        return list;
-    }
 
     public static Set<String> buildAncestors(String[] interfaces, String superClass) {
         Set<String> ancestors = new HashSet<>();

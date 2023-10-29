@@ -1,22 +1,18 @@
-package com.keven1z.core.hook.http.body;
+package com.keven1z.core.hook.asm.adapter;
 
 import com.keven1z.core.hook.asm.AsmMethods;
-import com.keven1z.core.hook.http.HttpSpy;
-import com.keven1z.core.policy.Policy;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.AdviceAdapter;
 
 import java.lang.spy.SimpleIASTSpyManager;
 
-public class HttpBodyReadAdviceAdapter extends AdviceAdapter {
+public class HttpBodyReadAdviceAdapter extends IASTAdviceAdapter {
     private static final String READ_BODY_1 = "()I";
     private static final String READ_BODY_2 = "([B)I";
     private static final String READ_BODY_3 = "([BII)I";
-    private String desc;
+    private final String desc;
 
-    public HttpBodyReadAdviceAdapter(int api, MethodVisitor mv, int access, String className, String name, String desc, Policy policy) {
+    public HttpBodyReadAdviceAdapter(int api, MethodVisitor mv, int access, String name, String desc) {
         super(api, mv, access, name, desc);
         this.desc = desc;
     }
@@ -40,25 +36,5 @@ public class HttpBodyReadAdviceAdapter extends AdviceAdapter {
             loadArg(2);
             invokeStatic(type, AsmMethods.ASM_METHOD_HTTPSPY$_onReadInvoked_3);
         }
-    }
-
-
-    private void pushReturnValue(int opcode) {
-        if (opcode == RETURN) {
-            visitInsn(ACONST_NULL);
-        } else if (opcode == ARETURN || opcode == ATHROW) {
-            dup();
-        } else {
-            if (opcode == LRETURN || opcode == DRETURN) {
-                dup2();
-            } else {
-                dup();
-            }
-            box(Type.getReturnType(this.methodDesc));
-        }
-    }
-
-    private boolean isThrow(int opcode) {
-        return opcode == ATHROW;
     }
 }

@@ -2,10 +2,9 @@ package com.keven1z.core.monitor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.keven1z.core.vulnerability.DetectAndReportHandler;
-import com.keven1z.core.vulnerability.report.TaintMessage;
+import com.keven1z.core.vulnerability.report.ReportMessage;
 
 import static com.keven1z.core.hook.HookThreadLocal.REPORT_QUEUE;
-import static com.keven1z.core.vulnerability.DetectAndReportHandler.detectorComposite;
 
 public class ReportMonitor extends Monitor {
 
@@ -22,7 +21,7 @@ public class ReportMonitor extends Monitor {
 
     @Override
     public void doRun() throws InterruptedException, JsonProcessingException {
-        TaintMessage taintMessage = null;
+        ReportMessage taintMessage = null;
         try {
             taintMessage = REPORT_QUEUE.take();
             DetectAndReportHandler.doHandle(taintMessage);
@@ -32,7 +31,6 @@ public class ReportMonitor extends Monitor {
             if (taintMessage != null) {
                 taintMessage.clear();
             }
-            detectorComposite.clear();
         }
     }
 }

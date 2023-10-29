@@ -25,6 +25,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.keven1z.core.consts.HTTPConst.GET;
+
 /**
  * Created by zhuming01 on 6/23/17.
  * All rights reserved
@@ -39,16 +41,6 @@ public class CoyoteRequest extends AbstractRequest {
      */
     public CoyoteRequest(Object request) {
         super(request);
-    }
-
-    /**
-     * 把 message bytes 字节类型信息数据转化成字符串类型数据
-     *
-     * @param messageBytes 字节类型的信息数据
-     * @return 转化之后的字符串类型的信息数据
-     */
-    private String mb2string(Object messageBytes) {
-        return ReflectionUtils.invokeStringMethod(messageBytes, "toString", EMPTY_CLASS);
     }
 
     /**
@@ -155,20 +147,8 @@ public class CoyoteRequest extends AbstractRequest {
             sb.append(uri);
         }
         String method = getMethod();
-        if ("GET".equals(method)) {
-            Enumeration<String> parameterNames = this.getParameterNames();
-            if (parameterNames == null) {
-                return sb;
-            }
-            if (parameterNames.hasMoreElements()) {
-                sb.append("?");
-            }
-            while (parameterNames.hasMoreElements()) {
-                String parameterName = parameterNames.nextElement();
-                String parameter = this.getParameter(parameterName);
-                sb.append(parameterName).append("=").append(parameter).append("&");
-            }
-
+        if (GET.equals(method)) {
+            sb.append("?").append(getParameterString());
         }
 
         return sb;

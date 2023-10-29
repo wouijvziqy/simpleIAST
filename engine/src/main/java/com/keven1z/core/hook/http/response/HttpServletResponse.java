@@ -41,4 +41,8 @@ public class HttpServletResponse {
         return headers;
     }
 
+    public String getResponseBody() {
+        return "";
+    }
+
 }

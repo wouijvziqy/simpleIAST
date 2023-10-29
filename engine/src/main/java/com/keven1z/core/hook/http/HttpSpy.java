@@ -2,7 +2,6 @@ package com.keven1z.core.hook.http;
 
 import com.keven1z.core.Config;
 import com.keven1z.core.model.graph.TaintGraph;
-import com.keven1z.core.model.graph.TaintNode;
 import com.keven1z.core.hook.http.body.HttpBodyOutputStream;
 import com.keven1z.core.hook.http.request.AbstractRequest;
 import com.keven1z.core.hook.http.request.CoyoteRequest;
@@ -11,14 +10,12 @@ import com.keven1z.core.hook.http.response.HttpServletResponse;
 import com.keven1z.core.log.ErrorType;
 import com.keven1z.core.log.LogTool;
 import com.keven1z.core.model.ApplicationModel;
-import com.keven1z.core.vulnerability.report.TaintMessage;
+import com.keven1z.core.vulnerability.report.HttpMessage;
+import com.keven1z.core.vulnerability.report.ReportMessage;
 import org.apache.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.lang.spy.SimpleIASTSpy;
-import java.util.List;
 import java.util.Objects;
-
 import static com.keven1z.core.hook.HookThreadLocal.*;
 import static com.keven1z.core.hook.HookThreadLocal.REQUEST_THREAD_LOCAL;
 import static com.keven1z.core.taint.TaintSpy.clear;
@@ -26,10 +23,6 @@ import static com.keven1z.core.taint.TaintSpy.clear;
 public class HttpSpy implements SimpleIASTSpy {
     Logger logger = Logger.getLogger(HttpSpy.class);
 
-    @Override
-    public void $_taint(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc, String type, String policyName) {
-
-    }
 
     @Override
     public void $_requestStarted(Object requestObject, Object responseObject) {
@@ -60,6 +53,7 @@ public class HttpSpy implements SimpleIASTSpy {
             httpContext.setResponse(new HttpServletResponse(responseObject));
             REQUEST_THREAD_LOCAL.set(httpContext);
             TAINT_GRAPH_THREAD_LOCAL.set(new TaintGraph());
+            REPORT_MESSAGE_THREADLOCAL.set(new ReportMessage());
             if (LogTool.isDebugEnabled()) {
                 logger.info("[" + REQUEST_THREAD_LOCAL.get().getRequest().getRequestId() + "] Request Enter,URL:" + abstractRequest.getRequestURLString());
             }
@@ -92,34 +86,22 @@ public class HttpSpy implements SimpleIASTSpy {
             }
             isRequestEnd.set(true);
 
-//            if (!isSuspectedTaint.get()) {
-//                if (LogTool.isDebugEnabled()) {
-//                    Logger.getLogger(getClass()).info("Not found vulnerability，url:" + REQUEST_THREAD_LOCAL.get().getRequest().getRequestURL());
-//                }
-//                return;
-//            }
-
-            TaintGraph taintGraph = TAINT_GRAPH_THREAD_LOCAL.get();
-            List<TaintNode> sinkNodes = taintGraph.getSinkNode();
-            if (sinkNodes.isEmpty()) {
+            if (!REPORT_MESSAGE_THREADLOCAL.get().isFound()) {
+                TAINT_GRAPH_THREAD_LOCAL.get().clear();
                 return;
             }
 
-            if (LogTool.isDebugEnabled()) {
-                Logger.getLogger(getClass()).info("The vulnerability may be exist,url:" + REQUEST_THREAD_LOCAL.get().getRequest().getRequestURL() + ",vulnerability type:" + sinkNodes.get(0).getTaintData().getVulnType());
-            }
-
-            AbstractRequest request = REQUEST_THREAD_LOCAL.get().getRequest();
-            HttpServletResponse response = REQUEST_THREAD_LOCAL.get().getResponse();
             String agentId = ApplicationModel.getAgentId();
-            TaintMessage taintMessage = new TaintMessage(agentId, request.getRequestURL().toString(), request.getMethod(), taintGraph);
-            taintMessage.setRequestHeaders(request.getHeaders());
-            taintMessage.setRequestBody(request.getStringBody());
-            taintMessage.setResponseHeaders(response.getHeaders());
-            boolean isOffer = REPORT_QUEUE.offer(taintMessage);
-            if (!isOffer) {
-                taintGraph.clear();
+            ReportMessage reportMessage = REPORT_MESSAGE_THREADLOCAL.get();
+            reportMessage.setAgentId(agentId);
+            reportMessage.setHttp(HttpMessage.transform(REQUEST_THREAD_LOCAL.get().getRequest(), REQUEST_THREAD_LOCAL.get().getResponse()));
+            if (reportMessage.isContainTaint()) {
+                reportMessage.setTaintGraph(TAINT_GRAPH_THREAD_LOCAL.get());
+            } else {
+                TAINT_GRAPH_THREAD_LOCAL.get().clear();
             }
+            REPORT_QUEUE.offer(reportMessage);
+
 
         } finally {
             enableHookLock.set(false);
@@ -246,4 +228,13 @@ public class HttpSpy implements SimpleIASTSpy {
 
     }
 
+    @Override
+    public void $_taint(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc, String type, String policyName) {
+
+    }
+
+    @Override
+    public void $_single(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc,String type, String policyName,boolean isRequireHttp) {
+
+    }
 }

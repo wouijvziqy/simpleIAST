@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static com.keven1z.core.consts.HTTPConst.GET;
+
 /**
  * Created by zhuming01 on 6/15/17.
  * All rights reserved
@@ -145,31 +147,17 @@ public final class HttpServletRequest extends AbstractRequest {
      */
     @Override
     public StringBuffer getRequestURL() {
-        try {
-            Object ret = ReflectionUtils.invokeMethod(getRequest(), "getRequestURL", EMPTY_CLASS);
-            if (ret != null) {
-                StringBuffer sb = (StringBuffer) ret;
-                if ("GET".equals(getMethod())) {
 
-                    Enumeration<String> parameterNames = this.getParameterNames();
-                    if (parameterNames == null) {
-                        return sb;
-                    }
-                    if (parameterNames.hasMoreElements()) {
-                        sb.append("?");
-                    }
-                    while (parameterNames.hasMoreElements()) {
-                        String parameterName = parameterNames.nextElement();
-                        String parameter = this.getParameter(parameterName);
-                        sb.append(parameterName).append("=").append(parameter).append("&");
-                    }
-                }
-                return sb;
+        Object ret = ReflectionUtils.invokeMethod(getRequest(), "getRequestURL", EMPTY_CLASS);
+        if (ret != null) {
+            StringBuffer sb = (StringBuffer) ret;
+            if (GET.equals(getMethod())) {
+                sb.append("?").append(getParameterString());
             }
-            return null;
-        } catch (Throwable t) {
-            return null;
+            return sb;
         }
+
+        return null;
     }
 
     @Override

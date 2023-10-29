@@ -59,7 +59,7 @@ public class TaintData {
      * 过滤条件值
      */
     private String conditions;
-
+    private Object[] parameters;
     /**
      * 是否进行过滤处理
      */
@@ -237,4 +237,11 @@ public class TaintData {
         this.sanitizerNodes = taintData;
     }
 
+    public Object[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Object[] parameters) {
+        this.parameters = parameters;
+    }
 }

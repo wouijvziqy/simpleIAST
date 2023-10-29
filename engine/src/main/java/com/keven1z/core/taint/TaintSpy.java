@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import java.lang.spy.SimpleIASTSpy;
 
 import static com.keven1z.core.Config.MAX_REPORT_QUEUE_SIZE;
+import static com.keven1z.core.consts.VulnConst.WEAK_PASSWORD_IN_SQL;
 import static com.keven1z.core.hook.HookThreadLocal.*;
 
 public class TaintSpy implements SimpleIASTSpy {
@@ -33,7 +34,7 @@ public class TaintSpy implements SimpleIASTSpy {
             }
 
             //如果没有流量，不进行hook
-            if (REQUEST_THREAD_LOCAL.get() == null) {
+            if (REQUEST_THREAD_LOCAL.get() == null && !WEAK_PASSWORD_IN_SQL.equals(policyName)) {
                 return;
             }
             if (isRequestEnd.get()) {
@@ -42,22 +43,8 @@ public class TaintSpy implements SimpleIASTSpy {
             /*
              * 如果上报线程满了，不进行hook
              */
-            if (IS_REPORT_QUEUE_FULL.get()) {
-                clear();
-                return;
-            }
-
-            /*
-             * 如果存在漏洞，且不为流量hook点，不再进行hook解析处理
-             */
-            if (isSuspectedTaint.get()) {
-                return;
-            }
-
-            if (REPORT_QUEUE.size() == MAX_REPORT_QUEUE_SIZE) {
-                IS_REPORT_QUEUE_FULL.set(true);
-                clear();
-                return;
+            if (REPORT_QUEUE.size() >= MAX_REPORT_QUEUE_SIZE) {
+                throw new RuntimeException("上报队列已满,目前队列大小：" + REPORT_QUEUE.size());
             }
 
 
@@ -66,12 +53,17 @@ public class TaintSpy implements SimpleIASTSpy {
             }
             spyHandler.doHandle(returnObject, thisObject, parameters, className, method, desc, type, policyName);
         } catch (Exception e) {
+            TAINT_GRAPH_THREAD_LOCAL.get().clear();
             clear();
             LogTool.error(ErrorType.HOOK_ERROR, "Failed to taint", e);
-
         } finally {
             enableHookLock.set(false);
         }
+    }
+
+    @Override
+    public void $_single(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc,String type, String policyName,boolean isRequireHttp) {
+
     }
 
     @Override
@@ -99,12 +91,10 @@ public class TaintSpy implements SimpleIASTSpy {
     }
 
     public static void clear() {
-//        TAINT_GRAPH_THREAD_LOCAL.get().clear();
+        REPORT_MESSAGE_THREADLOCAL.remove();
         TAINT_GRAPH_THREAD_LOCAL.remove();
         isRequestEnd.set(false);
-        isSuspectedTaint.set(false);
         REQUEST_THREAD_LOCAL.remove();
-        IS_REPORT_QUEUE_FULL.set(false);
         INVOKE_ID.set(INVOKE_ID_INIT_VALUE);
     }
 }

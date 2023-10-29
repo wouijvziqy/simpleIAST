@@ -1,14 +1,13 @@
 package com.keven1z.core.hook.transforms;
 
 import com.keven1z.core.EngineController;
-import com.keven1z.core.hook.http.HttpClassVisitor;
+import com.keven1z.core.hook.asm.IASTClassVisitor;
 import com.keven1z.core.log.ErrorType;
 import com.keven1z.core.log.LogTool;
 import com.keven1z.core.policy.PolicyContainer;
 import com.keven1z.core.utils.AsmUtils;
 import com.keven1z.core.utils.ClassUtils;
 import com.keven1z.core.utils.PolicyUtils;
-import com.keven1z.core.taint.probe.TaintClassVisitor;
 import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -116,9 +115,7 @@ public class HookTransformer implements ClassFileTransformer {
         };
 
         //通过自定义classVisitor进行类的改造
-        TaintClassVisitor taintClassVisitor = new TaintClassVisitor(classWriter, className);
-        HttpClassVisitor httpClassVisitor = new HttpClassVisitor(taintClassVisitor, className);
-        classReader.accept(httpClassVisitor, ClassReader.EXPAND_FRAMES);
+        classReader.accept(new IASTClassVisitor(classWriter, className), ClassReader.EXPAND_FRAMES);
         return dumpClassIfNecessary(className, classWriter.toByteArray());
     }
 

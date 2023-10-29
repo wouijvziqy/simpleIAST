@@ -41,6 +41,14 @@ public class VulnConst {
     /**
      * Spring EL表达式
      */
-    public static final String Sp_EL = "Spring_Expression_injection";
+    public static final String Sp_EL = "spring_expression_injection";
+    /**
+     * 数据库连接弱密码
+     */
+    public static final String WEAK_PASSWORD_IN_SQL = "weak_password_in_sql";
+    /**
+     * POST请求表单弱密码
+     */
+    public static final String WEAK_PASSWORD_IN_POST = "Spring_Expression_injection";
 
 }

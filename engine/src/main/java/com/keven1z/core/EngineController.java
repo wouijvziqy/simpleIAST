@@ -1,6 +1,7 @@
 package com.keven1z.core;
 
 import com.keven1z.core.hook.http.HttpSpy;
+import com.keven1z.core.hook.normal.SingleSpy;
 import com.keven1z.core.taint.TaintSpy;
 import com.keven1z.core.hook.transforms.HookTransformer;
 import com.keven1z.core.hook.transforms.ServerDetectTransform;
@@ -14,7 +15,7 @@ import com.keven1z.core.monitor.MonitorManager;
 import com.keven1z.core.monitor.ReportMonitor;
 import com.keven1z.core.pojo.AgentDTO;
 import com.keven1z.core.policy.PolicyContainer;
-import com.keven1z.core.policy.FileLoader;
+import com.keven1z.core.utils.FileUtils;
 import com.keven1z.core.utils.ClassUtils;
 import com.keven1z.core.utils.HttpClientUtils;
 import com.keven1z.core.utils.JsonUtils;
@@ -177,7 +178,7 @@ public class EngineController {
      */
     private void initSpy() {
         if (!SimpleIASTSpyManager.isInit()) {
-            SimpleIASTSpyManager.init(new TaintSpy(), new HttpSpy());
+            SimpleIASTSpyManager.init(new TaintSpy(), new HttpSpy(), new SingleSpy());
         }
     }
 
@@ -196,7 +197,7 @@ public class EngineController {
      * 加载策略
      */
     public void loadPolicy() throws IOException {
-        PolicyContainer policyContainer = FileLoader.load(this.getClass().getClassLoader());
+        PolicyContainer policyContainer = FileUtils.load(this.getClass().getClassLoader());
         if (policyContainer == null) {
             LogTool.error(ErrorType.POLICY_ERROR, "policyContainer is null");
             throw new RuntimeException("Policy load failed");
@@ -209,7 +210,7 @@ public class EngineController {
     }
 
     public void loadBlackList() throws IOException {
-        List<String> blackList = FileLoader.loadBlackList(this.getClass().getClassLoader());
+        List<String> blackList = FileUtils.loadBlackList(this.getClass().getClassLoader());
         context.setBlackList(blackList);
     }
 

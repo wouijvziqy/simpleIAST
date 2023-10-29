@@ -18,7 +18,10 @@
       "state": 1,
       "enter": 1,
       "exit": 1,
-      "exclude": ["org/springframework/security/web/firewall/FirewalledRequest","javax/servlet/http/HttpServletRequestWrapper"],
+      "exclude": [
+        "org/springframework/security/web/firewall/FirewalledRequest",
+        "javax/servlet/http/HttpServletRequestWrapper"
+      ],
       "inter": true
     },
     {
@@ -52,7 +55,7 @@
       "className": "java/io/InputStream",
       "method": "read",
       "desc": "([BII)I",
-      "state":1,
+      "state": 1,
       "enter": 1,
       "inter": true
     },
@@ -94,7 +97,7 @@
       "method": "getInputStream",
       "desc": "()Ljavax/servlet/ServletInputStream;",
       "state": 1,
-      "from":"O",
+      "from": "O",
       "to": "R",
       "enter": 0,
       "inter": true,
@@ -724,7 +727,10 @@
       "enter": 1,
       "exit": 0,
       "exclude": [
-        "org/springframework/jdbc/datasource/ConnectionProxy","com/microsoft/sqlserver/jdbc/SQLServerConnection43","com/microsoft/sqlserver/jdbc/SQLServerConnection","com/mysql/cj/jdbc/JdbcConnection"
+        "org/springframework/jdbc/datasource/ConnectionProxy",
+        "com/microsoft/sqlserver/jdbc/SQLServerConnection43",
+        "com/microsoft/sqlserver/jdbc/SQLServerConnection",
+        "com/mysql/cj/jdbc/JdbcConnection"
       ],
       "inter": true
     },
@@ -738,7 +744,10 @@
       "enter": 1,
       "exit": 0,
       "exclude": [
-        "org/springframework/jdbc/datasource/ConnectionProxy","com/microsoft/sqlserver/jdbc/SQLServerConnection43","com/microsoft/sqlserver/jdbc/SQLServerConnection","com/mysql/cj/jdbc/JdbcConnection"
+        "org/springframework/jdbc/datasource/ConnectionProxy",
+        "com/microsoft/sqlserver/jdbc/SQLServerConnection43",
+        "com/microsoft/sqlserver/jdbc/SQLServerConnection",
+        "com/mysql/cj/jdbc/JdbcConnection"
       ],
       "inter": true
     },
@@ -841,7 +850,9 @@
       "from": "P1",
       "enter": 1,
       "exit": 0,
-      "exclude": ["org/codehaus/stax2/XMLInputFactory2"],
+      "exclude": [
+        "org/codehaus/stax2/XMLInputFactory2"
+      ],
       "inter": true
     },
     {
@@ -957,7 +968,7 @@
       "exit": 0
     },
     {
-      "name": "Spring_Expression_injection",
+      "name": "spring_expression_injection",
       "className": "org/springframework/expression/ExpressionParser",
       "method": "parseExpression",
       "desc": "(Ljava/lang/String;Lorg/springframework/expression/ParserContext;)Lorg/springframework/expression/Expression;",
@@ -968,7 +979,7 @@
       "inter": true
     },
     {
-      "name": "Spring_Expression_injection",
+      "name": "spring_expression_injection",
       "className": "org/springframework/expression/ExpressionParser",
       "method": "parseExpression",
       "desc": "(Ljava/lang/String;Lorg/springframework/expression/ParserContext;)Lorg/springframework/expression/Expression;",
@@ -1169,6 +1180,19 @@
       "to": "R",
       "enter": 0,
       "exit": 1,
+      "inter": true
+    }
+  ],
+  "singles": [
+    {
+      "name": "weak_password_in_sql",
+      "className": "java/sql/Driver",
+      "method": "connect",
+      "desc": "(Ljava/lang/String;Ljava/util/Properties;)Ljava/sql/Connection;",
+      "state": 1,
+      "requireHttp": false,
+      "enter": 1,
+      "exit": 0,
       "inter": true
     }
   ]

@@ -38,13 +38,14 @@ public class TaintGraph {
         this.taintCache = new HashSet<>(1024);
     }
 
-    public void addNode(TaintData taintData) {
+    public TaintNode addNode(TaintData taintData) {
         TaintNode node = new TaintNode(taintData);
         addNode(node);
         this.taintCache.add(taintData.getToObjectHashCode());
         if (LogTool.isDebugEnabled()) {
             taintLogger.info("Add taint:" + taintData);
         }
+        return node;
     }
 
     public boolean isTaint(int systemCode) {

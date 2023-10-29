@@ -6,7 +6,8 @@ package java.lang.spy;
 public interface SimpleIASTSpy {
       void $_taint(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc, String type, String policyName);
 
-     
+      void $_single(Object returnObject, Object thisObject, Object[] parameters, String className, String method, String desc,String type, String policyName,boolean isRequireHttp);
+
       void $_requestStarted(Object requestObject, Object responseObject) ;
 
      

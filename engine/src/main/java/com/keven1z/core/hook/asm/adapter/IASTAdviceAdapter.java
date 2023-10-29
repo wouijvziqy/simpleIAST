@@ -1,4 +1,4 @@
-package com.keven1z.core.hook.asm;
+package com.keven1z.core.hook.asm.adapter;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;

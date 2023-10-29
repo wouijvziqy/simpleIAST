@@ -6,5 +6,6 @@ public enum PolicyTypeEnum {
     SOURCE,
     PROPAGATION,
     SINK,
-    SANITIZER
+    SANITIZER,
+    SINGLE
 }

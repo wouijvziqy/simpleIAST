@@ -2,8 +2,7 @@ package com.keven1z.core.hook;
 
 import com.keven1z.core.model.graph.TaintGraph;
 import com.keven1z.core.hook.http.HttpContext;
-import com.keven1z.core.vulnerability.report.TaintMessage;
-
+import com.keven1z.core.vulnerability.report.ReportMessage;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,27 +20,13 @@ public class HookThreadLocal {
         }
     };
     /**
-     * 是否存在疑似漏洞的污点图
+     * 当前请求上报漏洞list
      */
-    public static final ThreadLocal<Boolean> isSuspectedTaint = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return false;
-        }
-    };
+    public static final ThreadLocal<ReportMessage> REPORT_MESSAGE_THREADLOCAL = new ThreadLocal<>();
     /**
      * 请求是否结束
      */
     public static final ThreadLocal<Boolean> isRequestEnd = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return false;
-        }
-    };
-    /**
-     * 上报队列是否已满，若满不进行hook
-     */
-    public static final ThreadLocal<Boolean> IS_REPORT_QUEUE_FULL = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return false;
@@ -62,7 +47,7 @@ public class HookThreadLocal {
 
     public static final AtomicInteger INVOKE_ID = new AtomicInteger(INVOKE_ID_INIT_VALUE);
 
-    public static final LinkedBlockingQueue<TaintMessage> REPORT_QUEUE = new LinkedBlockingQueue<>(MAX_REPORT_QUEUE_SIZE);
+    public static final LinkedBlockingQueue<ReportMessage> REPORT_QUEUE = new LinkedBlockingQueue<>(MAX_REPORT_QUEUE_SIZE);
     /**
      * 请求消耗的时间计算
      */

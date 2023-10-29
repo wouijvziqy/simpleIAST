@@ -67,7 +67,7 @@ public class Policy implements Serializable {
     /*
      * 该hook点是否为可传播的，存在某些单一hook点为漏洞
      */
-    private boolean flowed = true;
+    private boolean requireHttp = true;
     /**
      * 是否是bean hook点
      */
@@ -205,12 +205,12 @@ public class Policy implements Serializable {
         this.exclude = exclude;
     }
 
-    public boolean isFlowed() {
-        return flowed;
+    public boolean isRequireHttp() {
+        return requireHttp;
     }
 
-    public void setFlowed(boolean flowed) {
-        this.flowed = flowed;
+    public void setRequireHttp(boolean requireHttp) {
+        this.requireHttp = requireHttp;
     }
 
     @Override

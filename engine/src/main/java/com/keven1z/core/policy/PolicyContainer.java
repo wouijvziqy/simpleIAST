@@ -1,7 +1,5 @@
 package com.keven1z.core.policy;
 
-import com.keven1z.core.log.LogTool;
-import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,8 @@ public class PolicyContainer {
      * 过滤点策略集合
      */
     private final List<Policy> sanitizers = new ArrayList<>(INITIAL_CAPACITY);
+    private final List<Policy> singles = new ArrayList<>(INITIAL_CAPACITY);
+
     /**
      * 接口类策略集合
      */
@@ -55,7 +55,9 @@ public class PolicyContainer {
         return sanitizers;
     }
 
-    private final Logger logger = Logger.getLogger(getClass().getPackage().getName());
+    public List<Policy> getSingles() {
+        return singles;
+    }
 
     public void addPolicy(Policy policy) {
         PolicyTypeEnum policyType = policy.getType();
@@ -74,6 +76,8 @@ public class PolicyContainer {
             this.http.add(policy);
         } else if (PolicyTypeEnum.SANITIZER.equals(policyType)) {
             this.sanitizers.add(policy);
+        } else if (PolicyTypeEnum.SINGLE.equals(policyType)) {
+            this.singles.add(policy);
         }
     }
 
@@ -83,7 +87,8 @@ public class PolicyContainer {
     public int getPolicySize() {
         return this.getSink().size() + this.getSource().size() + this.getPropagation().size() + this.getSanitizers().size();
     }
-    public List<Policy> getTaintPolicy(){
+
+    public List<Policy> getTaintPolicy() {
         ArrayList<Policy> policies = new ArrayList<>();
         policies.addAll(this.getSource());
         policies.addAll(this.getPropagation());

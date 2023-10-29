@@ -24,12 +24,16 @@ import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
+import static com.keven1z.core.consts.HTTPConst.POST;
+
 /**
  * 为不同服务器的不同请求hook点做出的统一格式抽象类
  */
 public abstract class AbstractRequest {
     public static final Class[] EMPTY_CLASS = new Class[]{};
     protected static final Class[] STRING_CLASS = new Class[]{String.class};
+
+
     protected WeakReference<Object> request;
     protected WeakReference<Object> inputStream = null;
     protected int inputStreamId = -1;
@@ -328,20 +332,24 @@ public abstract class AbstractRequest {
             }
         } else if (bodyWriter != null) {
             return bodyWriter.toString();
-        } else if ("POST".equals(getMethod())) {
-            StringBuilder sb = new StringBuilder();
-            Enumeration<String> parameterNames = this.getParameterNames();
-            if (parameterNames == null) {
-                return null;
-            }
-            while (parameterNames.hasMoreElements()) {
-                String parameterName = parameterNames.nextElement();
-                String parameter = this.getParameter(parameterName);
-                sb.append(parameterName).append("=").append(parameter).append("&");
-            }
-            return sb.toString();
+        } else if (POST.equals(getMethod())) {
+            return getParameterString().toString();
         }
         return null;
+    }
+
+    public StringBuilder getParameterString() {
+        StringBuilder sb = new StringBuilder();
+        Enumeration<String> parameterNames = this.getParameterNames();
+        if (parameterNames == null) {
+            return sb;
+        }
+        while (parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            String parameter = this.getParameter(parameterName);
+            sb.append(parameterName).append("=").append(parameter).append("&");
+        }
+        return sb;
     }
 
     public int getBodyLength() {
