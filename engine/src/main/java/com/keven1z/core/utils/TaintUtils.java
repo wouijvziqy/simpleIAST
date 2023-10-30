@@ -3,7 +3,7 @@ package com.keven1z.core.utils;
 import com.keven1z.core.model.graph.TaintData;
 import com.keven1z.core.model.graph.TaintNode;
 import com.keven1z.core.policy.PolicyTypeEnum;
-import com.keven1z.core.vulnerability.sanitizer.SanitizerTypeEnum;
+import com.keven1z.core.policy.SanitizerTypeEnum;
 
 import java.util.*;
 

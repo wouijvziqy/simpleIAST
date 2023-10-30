@@ -38,6 +38,7 @@ public class TaintData {
     /**
      * 若是漏洞，标记其漏洞名称
      */
+    @JsonIgnore
     private String VulnType;
     /**
      * 过滤节点信息表
@@ -63,6 +64,7 @@ public class TaintData {
     /**
      * 是否进行过滤处理
      */
+    @JsonIgnore
     private boolean isSanitizer;
     private List<String> stackList;
 

@@ -1,4 +1,4 @@
-package com.keven1z.core.vulnerability.report;
+package com.keven1z.core.pojo;
 
 import com.keven1z.core.hook.http.request.AbstractRequest;
 import com.keven1z.core.hook.http.response.HttpServletResponse;

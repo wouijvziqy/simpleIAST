@@ -13,7 +13,6 @@ import com.keven1z.core.utils.StackUtils;
 
 import java.util.List;
 
-import static com.keven1z.core.hook.HookThreadLocal.REPORT_MESSAGE_THREADLOCAL;
 import static com.keven1z.core.hook.HookThreadLocal.TAINT_GRAPH_THREAD_LOCAL;
 
 /**
@@ -64,8 +63,7 @@ public class SinkClassResolver implements HandlerHookClassResolver {
         taintData.setFromValue(fromObject.toString());
         taintData.setStackList(StackUtils.getStackTraceArray(true, true));
         taintData.setTaintValueType(fromObject.getClass().getTypeName());
-        TaintNode taintNode = taintGraph.addNode(taintData);
+        taintGraph.addNode(taintData);
         taintGraph.addEdge(node.getTaintData(), taintData);
-        REPORT_MESSAGE_THREADLOCAL.get().addFindingData(taintNode);
     }
 }

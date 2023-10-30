@@ -1,18 +1,13 @@
 package com.keven1z.core.hook.normal;
 
 
-import com.keven1z.core.log.ErrorType;
-import com.keven1z.core.log.LogTool;
+
 import com.keven1z.core.model.ApplicationModel;
+import com.keven1z.core.pojo.ReportData;
 import com.keven1z.core.pojo.SingleFindingData;
-import com.keven1z.core.policy.Policy;
-import com.keven1z.core.taint.TaintSpy;
-import com.keven1z.core.utils.PolicyUtils;
 import com.keven1z.core.vulnerability.NormalDetector;
 import com.keven1z.core.vulnerability.detectors.WeakPasswordInSqlDetector;
-import com.keven1z.core.vulnerability.report.ReportMessage;
 import org.apache.log4j.Logger;
-
 import java.lang.spy.SimpleIASTSpy;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +55,11 @@ public class SingleSpy implements SimpleIASTSpy {
             singleFindingData.setVulnerableType(policyName);
             //如果该漏洞不依赖HTTP流量则直接上报
             if (!isRequireHttp) {
-                ReportMessage reportMessage = new ReportMessage(ApplicationModel.getAgentId());
-                reportMessage.addFindingData(singleFindingData);
+                ReportData reportMessage = new ReportData(ApplicationModel.getAgentId());
+                reportMessage.addFindingDataList(singleFindingData);
                 REPORT_QUEUE.offer(reportMessage);
             } else if (REQUEST_THREAD_LOCAL.get() != null) {
-                REPORT_MESSAGE_THREADLOCAL.get().addFindingData(singleFindingData);
+                SINGLE_FINDING_THREADLOCAL.get().add(singleFindingData);
             }
         }
     }

@@ -91,10 +91,11 @@ public class TaintSpy implements SimpleIASTSpy {
     }
 
     public static void clear() {
-        REPORT_MESSAGE_THREADLOCAL.remove();
+        TAINT_GRAPH_THREAD_LOCAL.get().clear();
         TAINT_GRAPH_THREAD_LOCAL.remove();
         isRequestEnd.set(false);
         REQUEST_THREAD_LOCAL.remove();
         INVOKE_ID.set(INVOKE_ID_INIT_VALUE);
+        SINGLE_FINDING_THREADLOCAL.remove();
     }
 }

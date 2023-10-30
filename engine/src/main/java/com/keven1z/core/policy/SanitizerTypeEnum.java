@@ -1,4 +1,4 @@
-package com.keven1z.core.vulnerability.sanitizer;
+package com.keven1z.core.policy;
 
 public enum SanitizerTypeEnum {
     pattern,//正则匹配

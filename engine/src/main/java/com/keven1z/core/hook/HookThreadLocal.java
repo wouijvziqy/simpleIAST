@@ -2,7 +2,10 @@ package com.keven1z.core.hook;
 
 import com.keven1z.core.model.graph.TaintGraph;
 import com.keven1z.core.hook.http.HttpContext;
-import com.keven1z.core.vulnerability.report.ReportMessage;
+import com.keven1z.core.pojo.ReportData;
+import com.keven1z.core.pojo.SingleFindingData;
+
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,7 +25,7 @@ public class HookThreadLocal {
     /**
      * 当前请求上报漏洞list
      */
-    public static final ThreadLocal<ReportMessage> REPORT_MESSAGE_THREADLOCAL = new ThreadLocal<>();
+    public static final ThreadLocal<List<SingleFindingData>> SINGLE_FINDING_THREADLOCAL = new ThreadLocal<>();
     /**
      * 请求是否结束
      */
@@ -47,7 +50,7 @@ public class HookThreadLocal {
 
     public static final AtomicInteger INVOKE_ID = new AtomicInteger(INVOKE_ID_INIT_VALUE);
 
-    public static final LinkedBlockingQueue<ReportMessage> REPORT_QUEUE = new LinkedBlockingQueue<>(MAX_REPORT_QUEUE_SIZE);
+    public static final LinkedBlockingQueue<ReportData> REPORT_QUEUE = new LinkedBlockingQueue<>(MAX_REPORT_QUEUE_SIZE);
     /**
      * 请求消耗的时间计算
      */

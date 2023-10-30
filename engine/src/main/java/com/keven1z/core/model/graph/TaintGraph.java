@@ -293,7 +293,7 @@ public class TaintGraph {
         return list;
     }
 
-    public List<TaintNode> getSinkNode() {
+    public List<TaintNode> getSinkNodes() {
         return sinkNode;
     }
 
